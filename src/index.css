@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222 9.3% 14.7%;
+    --foreground: 220 16% 92%;
+    --card: 222 9% 18%;
+    --card-foreground: 220 16% 92%;
+    --popover: 222 9% 18%;
+    --popover-foreground: 220 16% 92%;
+    --primary: 316 68% 37%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 159 76% 41%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 222 7.7% 12.7%;
+    --muted-foreground: 222 8% 62%;
+    --accent: 222 7.7% 12.7%;
+    --accent-foreground: 220 16% 90%;
+    --destructive: 0 68% 56%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 222 5.9% 23.3%;
+    --input: 222 7.7% 12.7%;
+    --ring: 316 68% 37%;
+  }
+}
+
+@layer base {
+  .dark {
+    color-scheme: dark;
+    background-color: hsl(222 9.3% 14.7%);
+    color: hsl(var(--foreground));
+  }
+
+  .dark body {
+    background-image:
+      radial-gradient(
+        1100px 560px at 50% -8%,
+        hsl(var(--primary) / 0.22),
+        transparent 60%
+      ),
+      linear-gradient(
+        to right,
+        hsl(var(--primary) / 0.15) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        hsl(var(--primary) / 0.15) 1px,
+        transparent 1px
+      );
+    background-size:
+      100% 100%,
+      48px 48px,
+      48px 48px;
+  }
+
+  .dark ::selection {
+    background: hsl(var(--primary) / 0.5);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  .scroll-list {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+  .scroll-list::-webkit-scrollbar {
+    width: 6px;
+  }
+  .scroll-list::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scroll-list::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background: hsl(var(--border));
+  }
+}
