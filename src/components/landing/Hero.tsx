@@ -82,7 +82,7 @@ const Hero = () => {
             )}
           </div>
 
-          <div className="mt-4 sm:mt-6 flex items-center gap-2 sm:gap-3">
+          <div className="hidden sm:mt-6 sm:flex sm:items-center sm:gap-3">
             <div className="flex -space-x-2">
               {["RD", "MS", "AK", "JT"].map((initials, i) => (
                 <span
