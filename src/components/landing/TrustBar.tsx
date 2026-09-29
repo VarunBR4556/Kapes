@@ -10,19 +10,19 @@ const stats = [
 
 const TrustBar = () => {
   return (
-    <section className="relative overflow-hidden border-y bg-[#eceef1] dark:bg-muted/40">
-      <div className="container grid grid-cols-2 gap-6 py-10 md:grid-cols-4">
+    <section className="relative overflow-hidden border-y bg-[#eceef1] dark:bg-muted/40 -mt-4 sm:mt-0">
+      <div className="container grid grid-cols-2 gap-3 py-6 sm:gap-4 sm:py-8 md:grid-cols-4 md:gap-6 md:py-10">
         {stats.map((stat) => (
           <div key={stat.label} className="text-center">
-            <p className="text-3xl font-extrabold tracking-tight text-primary md:text-4xl">
+            <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight text-primary">
               {stat.value}
             </p>
-            <p className="mt-1 text-sm text-muted-foreground">{stat.label}</p>
+            <p className="mt-0.5 text-[10px] sm:text-xs md:text-sm text-muted-foreground">{stat.label}</p>
           </div>
         ))}
       </div>
-      <Watermark icon={Container} className="-left-10 -bottom-8 h-40 w-40 -rotate-12" />
-      <Watermark icon={Truck} className="-right-10 -top-12 h-40 w-40 rotate-12" />
+      <Watermark icon={Container} className="-left-10 -bottom-8 h-40 w-40 -rotate-12 opacity-[0.03] dark:opacity-[0.04] sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
+      <Watermark icon={Truck} className="-right-10 -top-12 h-40 w-40 rotate-12 opacity-[0.03] dark:opacity-[0.04] sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
     </section>
   );
 };
