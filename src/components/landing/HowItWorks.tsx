@@ -7,6 +7,7 @@ const steps = [
     icon: Truck,
     title: "Drivers post trips",
     short: "Post trips",
+    shortDesc: "Share route, space, date & price.",
     description:
       "Share your route, vehicle type, available capacity, departure date and price per kg in under two minutes.",
   },
@@ -14,6 +15,7 @@ const steps = [
     icon: Search,
     title: "Customers find & book",
     short: "Find & book",
+    shortDesc: "Search by pickup, dropoff & date.",
     description:
       "Search by pickup, dropoff and date. Compare verified drivers and book only the space you actually need.",
   },
@@ -21,6 +23,7 @@ const steps = [
     icon: PackageCheck,
     title: "Ship, track & pay securely",
     short: "Ship & pay",
+    shortDesc: "Track live, pay on delivery.",
     description:
       "Your cargo moves on a route that was already happening. Track it live and pay securely on delivery.",
   },
@@ -58,11 +61,11 @@ const HowItWorks = () => {
                 <div className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-lg bg-amber-400 text-amber-950 dark:bg-teal-400 dark:text-teal-950 sm:mb-4 sm:h-12 sm:w-12 sm:rounded-xl">
                   <step.icon className="h-3.5 w-3.5 sm:h-6 sm:w-6" />
                 </div>
-                <h3 className="text-[11px] leading-tight font-bold sm:mb-1.5 sm:text-xl">
+                <h3 className="text-sm leading-tight font-bold sm:mb-1.5 sm:text-xl">
                   {step.short}
                 </h3>
-                <p className="hidden text-sm text-muted-foreground sm:mb-1.5 sm:block sm:text-base">
-                  <span className="sm:hidden">{step.title}</span>
+                <p className="mt-1 text-[11px] leading-snug text-muted-foreground sm:mt-0 sm:text-base">
+                  <span className="sm:hidden">{step.shortDesc}</span>
                   <span className="hidden sm:inline">{step.description}</span>
                 </p>
               </CardContent>
