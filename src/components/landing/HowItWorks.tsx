@@ -45,11 +45,11 @@ const HowItWorks = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-3 gap-2 sm:gap-4 lg:gap-6">
+        <div className="-mx-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:px-0 lg:gap-6">
           {steps.map((step, i) => (
             <Card
               key={step.title}
-              className="relative overflow-hidden rounded-xl sm:rounded-2xl"
+              className="relative w-[70%] shrink-0 snap-start overflow-hidden rounded-xl sm:w-auto sm:rounded-2xl"
             >
               <CardContent className="p-2 sm:p-5 lg:p-7">
                 <span className="absolute right-1.5 top-1.5 text-xl font-extrabold text-primary/10 sm:right-4 sm:top-4 sm:text-5xl">
