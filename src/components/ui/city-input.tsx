@@ -38,10 +38,11 @@ interface CityInputProps
   onValueChange: (value: string) => void;
   icon?: React.ReactNode;
   scope?: "all" | "origin" | "destination";
+  include?: (trip: Trip) => boolean;
 }
 
 const CityInput = React.forwardRef<HTMLInputElement, CityInputProps>(
-  ({ value, onValueChange, className, icon, scope = "all", ...props }, ref) => {
+  ({ value, onValueChange, className, icon, scope = "all", include, ...props }, ref) => {
     const { trips } = useTrips();
     const { userById } = useUsers();
     const [open, setOpen] = React.useState(false);
@@ -60,16 +61,18 @@ const CityInput = React.forwardRef<HTMLInputElement, CityInputProps>(
       };
     }, []);
 
-    const include = React.useCallback(
+    const defaultInclude = React.useCallback(
       (t: Trip) => !t.driverId || isDriverSearchable(userById(t.driverId)),
       [userById],
     );
 
+    const activeInclude = include ?? defaultInclude;
+
     const cities = React.useMemo(() => {
-      if (scope === "origin") return upcomingPickupCities(trips, now, include);
-      if (scope === "destination") return upcomingDropoffCities(trips, now, include);
-      return upcomingTripCities(trips, now, include);
-    }, [trips, now, scope, include]);
+      if (scope === "origin") return upcomingPickupCities(trips, now, activeInclude);
+      if (scope === "destination") return upcomingDropoffCities(trips, now, activeInclude);
+      return upcomingTripCities(trips, now, activeInclude);
+    }, [trips, now, scope, activeInclude]);
 
     const matches = React.useMemo(() => {
       const q = value.trim().toLowerCase();
@@ -158,7 +161,7 @@ const CityInput = React.forwardRef<HTMLInputElement, CityInputProps>(
         />
 
         {open && matches.length > 0 && (
-          <ul className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
+          <ul className="absolute z-50 mt-1 max-h-60 w-full sm:max-w-xs overflow-auto rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
             {matches.map((city, i) => (
               <li key={city}>
                 <button
@@ -167,13 +170,17 @@ const CityInput = React.forwardRef<HTMLInputElement, CityInputProps>(
                     e.preventDefault();
                     select(city);
                   }}
+                  onTouchStart={(e) => {
+                    e.preventDefault();
+                    select(city);
+                  }}
                   onMouseEnter={() => setHighlight(i)}
                   className={cn(
-                    "flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm transition-colors",
-                    i === highlight ? "bg-accent text-accent-foreground" : "hover:bg-accent",
+                    "flex w-full items-center gap-2 rounded-sm px-3 py-2.5 text-left text-sm transition-colors touch-manipulation",
+                    i === highlight ? "bg-accent text-accent-foreground" : "hover:bg-accent active:bg-accent",
                   )}
                 >
-                  <MapPin className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                  <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
                   {city}
                 </button>
               </li>

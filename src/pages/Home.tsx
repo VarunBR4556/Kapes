@@ -12,12 +12,14 @@ const Home = () => {
     <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
       <main className="flex-1">
-        <Hero />
-        <TrustBar />
-        <HowItWorks />
-        <VehicleTypes />
-        <ForYou />
-        <CtaBand />
+        <div className="sm:space-y-0 -mt-4 sm:mt-0">
+          <Hero />
+          <TrustBar />
+          <HowItWorks />
+          <VehicleTypes />
+          <ForYou />
+          <CtaBand />
+        </div>
       </main>
       <Footer />
     </div>
