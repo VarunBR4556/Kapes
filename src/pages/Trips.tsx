@@ -113,29 +113,29 @@ const Trips = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
-        <div className="container flex h-16 items-center justify-between">
-          <Link to="/" className="flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <Truck className="h-5 w-5" />
+        <div className="container flex h-14 sm:h-16 items-center justify-between">
+          <Link to="/" className="flex items-center gap-2 sm:gap-2.5">
+            <span className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+              <Truck className="h-4 w-4 sm:h-5 sm:w-5" />
             </span>
-            <span className="text-xl font-bold tracking-tight">
+            <span className="text-lg sm:text-xl font-bold tracking-tight">
               Kapes<span className="text-primary">.</span>
             </span>
           </Link>
 
-          <div className="flex items-center gap-2">
-            <span className="hidden rounded-full bg-accent px-3 py-1 text-sm font-medium sm:inline-flex">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <span className="hidden rounded-full bg-accent px-2.5 py-0.5 text-xs sm:text-sm font-medium sm:inline-flex">
               Browse capacity
             </span>
             <ThemeToggle />
-            <Button size="sm" asChild>
+            <Button size="sm" className="text-xs sm:text-sm" asChild>
               <Link to={currentUser ? (currentUser.role === "driver" ? "/driver" : "/account") : "/login"}>
                 {currentUser ? "Dashboard" : "Log in"}
               </Link>
             </Button>
-            <Button variant="outline" size="sm" asChild>
+            <Button variant="outline" size="sm" className="text-xs sm:text-sm" asChild>
               <Link to="/">
-                <Home className="h-4 w-4" />
+                <Home className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 Back to site
               </Link>
             </Button>
@@ -143,20 +143,20 @@ const Trips = () => {
         </div>
       </header>
 
-      <main className="container py-10">
-        <div className="mb-8">
-          <h1 className="text-3xl font-extrabold tracking-tight">Available capacity</h1>
-          <p className="mt-1 text-muted-foreground">
+      <main className="container py-6 sm:py-10">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Available capacity</h1>
+          <p className="mt-0.5 sm:mt-1 text-sm sm:text-base text-muted-foreground">
             {available.length} trips with spare space currently on the road.
           </p>
         </div>
 
-        <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex flex-wrap gap-2">
+        <div className="mb-4 sm:mb-6 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             <Link
               to={typeHref(null)}
               className={cn(
-                "rounded-full border px-4 py-1.5 text-sm font-medium transition-colors",
+                "rounded-full border px-3 py-1 text-xs sm:text-sm font-medium transition-colors",
                 !activeType ? "border-primary bg-primary/10 text-primary" : "hover:bg-accent",
               )}
             >
@@ -167,7 +167,7 @@ const Trips = () => {
                 key={v}
                 to={typeHref(v)}
                 className={cn(
-                  "rounded-full border px-4 py-1.5 text-sm font-medium transition-colors",
+                  "rounded-full border px-3 py-1 text-xs sm:text-sm font-medium transition-colors",
                   activeType === v ? "border-primary bg-primary/10 text-primary" : "hover:bg-accent",
                 )}
               >
@@ -176,7 +176,7 @@ const Trips = () => {
             ))}
           </div>
 
-          <div className="w-full lg:w-72">
+          <div className="hidden w-full lg:block lg:w-72">
             <CityInput
               icon={
                 <Search className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -184,8 +184,22 @@ const Trips = () => {
               placeholder="Search city…"
               value={query}
               onValueChange={setQuery}
+              include={include}
             />
           </div>
+        </div>
+
+        <div className="lg:hidden">
+          <CityInput
+            icon={
+              <Search className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            }
+            placeholder="Search city…"
+            value={query}
+            onValueChange={setQuery}
+            include={include}
+            className="w-full"
+          />
         </div>
 
         {filterChips.length > 0 && (
