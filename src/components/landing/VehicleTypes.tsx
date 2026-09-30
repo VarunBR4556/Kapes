@@ -73,11 +73,11 @@ const VehicleTypes = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-4 gap-2 sm:gap-4 lg:gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="-mx-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-0 lg:grid-cols-4 lg:gap-6">
           {vehicles.map((v) => (
             <Card
               key={v.label}
-              className="group cursor-pointer rounded-xl transition-all hover:-translate-y-1 hover:shadow-lg sm:rounded-2xl"
+              className="group w-[46%] shrink-0 cursor-pointer snap-start rounded-xl transition-all hover:-translate-y-1 hover:shadow-lg sm:w-auto sm:rounded-2xl"
             >
               <CardContent className="flex flex-col items-start p-2 sm:p-5 lg:p-7">
                 <div className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-primary-foreground transition-transform group-hover:scale-110 sm:mb-4 sm:h-12 sm:w-12 sm:rounded-xl">
