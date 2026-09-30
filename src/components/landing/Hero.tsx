@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,14 +7,12 @@ import DatePicker from "@/components/ui/date-picker";
 import { CityInput } from "@/components/ui/city-input";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/sonner";
-import { Search, Truck, Zap, Star, ShieldCheck, Route, Package, HelpCircle } from "lucide-react";
+import { Search, Truck, Zap, Star, ShieldCheck, Route, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Watermark from "@/components/landing/Watermark";
-import { useUsers } from "@/lib/users-store";
 
 const Hero = () => {
   const navigate = useNavigate();
-  const { currentUser } = useUsers();
   const [pickup, setPickup] = useState("");
   const [dropoff, setDropoff] = useState("");
   const [date, setDate] = useState("");
@@ -59,28 +57,6 @@ const Hero = () => {
             Kapes matches drivers with unused space on their route to customers who
             need cargo moved. Less fuel burned, lower shipping costs, fairer on everyone.
           </p>
-
-          <div className="mt-4 sm:mt-6 flex flex-col gap-2 sm:flex-row sm:gap-3">
-            <Button size="sm" className="w-full sm:w-auto" onClick={handleSubmit}>
-              <Search className="h-4 w-4" />
-              Find capacity
-            </Button>
-            {currentUser?.role === "customer" ? (
-              <Button size="sm" variant="outline" className="w-full sm:w-auto" asChild>
-                <a href="#company">
-                  <HelpCircle className="h-4 w-4" />
-                  Help
-                </a>
-              </Button>
-            ) : (
-              <Button size="sm" variant="outline" className="w-full sm:w-auto" asChild>
-                <Link to="/driver">
-                  <Truck className="h-4 w-4" />
-                  Post your trip
-                </Link>
-              </Button>
-            )}
-          </div>
 
           <div className="hidden sm:mt-6 sm:flex sm:items-center sm:gap-3">
             <div className="flex -space-x-2">
