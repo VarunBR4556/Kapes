@@ -83,7 +83,7 @@ const VehicleTypes = () => {
                 <div className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-primary-foreground transition-transform group-hover:scale-110 sm:mb-4 sm:h-12 sm:w-12 sm:rounded-xl">
                   <v.icon className="h-3.5 w-3.5 sm:h-6 sm:w-6" />
                 </div>
-                <h3 className="text-[11px] leading-tight font-bold sm:text-lg">
+                <h3 className="text-xs leading-tight font-bold sm:text-lg">
                   <span className="sm:hidden">{v.short}</span>
                   <span className="hidden sm:inline">{v.label}</span>
                 </h3>
@@ -91,7 +91,7 @@ const VehicleTypes = () => {
                   <span className="sm:hidden">{v.shortRange}</span>
                   <span className="hidden sm:inline">{v.range}</span>
                 </p>
-                <p className="hidden text-sm text-muted-foreground sm:mt-1 sm:block">
+                <p className="mt-1 text-[10px] leading-tight text-muted-foreground sm:mt-1 sm:text-sm">
                   {v.use}
                 </p>
                 <Link
