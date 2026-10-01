@@ -67,8 +67,8 @@ const Footer = () => {
 
   return (
     <footer id="company" className="scroll-mt-20 border-t bg-muted">
-      <div className="container py-8 sm:py-10 lg:py-14">
-        <div className="grid gap-4 sm:gap-6 lg:gap-10 lg:grid-cols-6">
+      <div className="container py-6 sm:py-10 lg:py-14">
+        <div className="lg:grid lg:gap-10 lg:grid-cols-6">
           <div className="lg:col-span-2">
             <a href="#top" className="flex items-center gap-2 sm:gap-2.5">
               <span className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
@@ -96,9 +96,13 @@ const Footer = () => {
             </div>
           </div>
 
+          <div className="-mx-8 mt-5 flex snap-x snap-mandatory gap-6 overflow-x-auto overscroll-x-contain px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-pl-8 sm:-mx-0 sm:mt-0 sm:contents sm:overflow-visible sm:px-0 sm:scroll-pl-0">
           {visibleColumns.map((col) => (
-            <div key={col.title}>
-              <h4 className="mb-2 text-[10px] sm:text-xs font-bold uppercase tracking-wider">{col.title}</h4>
+            <div
+              key={col.title}
+              className="w-[42%] shrink-0 snap-start sm:w-auto sm:shrink lg:w-auto"
+            >
+              <h4 className="mb-1.5 text-[10px] sm:mb-2 sm:text-xs font-bold uppercase tracking-wider">{col.title}</h4>
               <ul className="space-y-1.5">
                 {col.links.map((link) => (
                   <li key={link.label}>
@@ -122,6 +126,7 @@ const Footer = () => {
               </ul>
             </div>
           ))}
+          </div>
         </div>
       </div>
 

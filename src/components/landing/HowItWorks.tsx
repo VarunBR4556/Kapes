@@ -73,8 +73,8 @@ const HowItWorks = () => {
           ))}
         </div>
       </div>
-      <Watermark icon={MapPin} className="-left-12 top-1/3 h-52 w-52 -rotate-12 opacity-[0.03] dark:opacity-[0.04] sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
-      <Watermark icon={Navigation} className="-right-10 top-10 h-48 w-48 rotate-12 opacity-[0.03] dark:opacity-[0.04] sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
+      <Watermark icon={MapPin} className="-left-6 top-8 h-24 w-24 -rotate-12 opacity-[0.05] dark:opacity-[0.06] sm:-left-12 sm:top-1/3 sm:h-52 sm:w-52 sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
+      <Watermark icon={Navigation} className="-right-6 top-12 h-24 w-24 rotate-12 opacity-[0.05] dark:opacity-[0.06] sm:-right-10 sm:top-10 sm:h-48 sm:w-48 sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
     </section>
   );
 };

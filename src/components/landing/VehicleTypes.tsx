@@ -107,9 +107,9 @@ const VehicleTypes = () => {
           ))}
         </div>
       </div>
-      <Watermark icon={Box} className="-left-14 top-1/4 h-56 w-56 rotate-12 opacity-[0.03] dark:opacity-[0.04] sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
-      <Watermark icon={Truck} className="-right-12 bottom-8 h-64 w-64 -rotate-6 opacity-[0.03] dark:opacity-[0.04] sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
-      <Watermark icon={Route} className="right-1/4 -top-6 h-32 w-32 rotate-45 opacity-[0.03] dark:opacity-[0.04] sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
+      <Watermark icon={Box} className="-left-6 top-10 h-24 w-24 rotate-12 opacity-[0.05] dark:opacity-[0.06] sm:-left-14 sm:top-1/4 sm:h-56 sm:w-56 sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
+      <Watermark icon={Truck} className="-right-6 bottom-10 h-24 w-24 -rotate-6 opacity-[0.05] dark:opacity-[0.06] sm:-right-12 sm:bottom-8 sm:h-64 sm:w-64 sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
+      <Watermark icon={Route} className="right-2 -top-4 h-16 w-16 rotate-45 opacity-[0.05] dark:opacity-[0.06] sm:right-1/4 sm:-top-6 sm:h-32 sm:w-32 sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
     </section>
   );
 };

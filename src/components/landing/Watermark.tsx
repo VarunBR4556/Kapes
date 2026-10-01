@@ -8,7 +8,7 @@ type WatermarkProps = {
 const Watermark = ({ icon: Icon, className = "" }: WatermarkProps) => (
   <Icon
     aria-hidden="true"
-    className={`pointer-events-none absolute select-none text-primary opacity-[0.07] dark:opacity-[0.08] ${className}`}
+    className={`pointer-events-none absolute select-none text-primary ${className}`}
   />
 );
 
