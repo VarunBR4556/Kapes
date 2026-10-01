@@ -66,7 +66,7 @@ const Footer = () => {
   });
 
   return (
-    <footer id="company" className="scroll-mt-20 border-t bg-muted">
+    <footer id="company" className="scroll-mt-16 border-t bg-muted sm:scroll-mt-20">
       <div className="container py-6 sm:py-10 lg:py-14">
         <div className="lg:grid lg:gap-10 lg:grid-cols-6">
           <div className="lg:col-span-2">

@@ -7,7 +7,7 @@ const ForYou = () => {
   const navigate = useNavigate();
 
   return (
-    <section id="for-you" className="relative overflow-hidden py-8 sm:py-12 lg:py-16 -mt-4 sm:mt-0">
+    <section id="for-you" className="relative scroll-mt-16 overflow-hidden py-8 sm:mt-0 sm:scroll-mt-24 sm:py-12 lg:py-16 -mt-4">
       <div className="container">
         <div className="mb-8 sm:mb-12 text-center">
           <h2 className="text-xl sm:text-2xl lg:text-3xl md:text-4xl font-extrabold tracking-tight">

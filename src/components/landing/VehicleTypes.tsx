@@ -55,7 +55,7 @@ const vehicles: VehicleCard[] = [
 
 const VehicleTypes = () => {
   return (
-    <section id="vehicle-types" className="relative overflow-hidden border-y bg-[#eceef1] py-8 sm:py-12 lg:py-16 dark:bg-muted/40 -mt-4 sm:mt-0">
+    <section id="vehicle-types" className="relative scroll-mt-16 overflow-hidden border-y bg-[#eceef1] py-8 dark:bg-muted/40 sm:mt-0 sm:scroll-mt-24 sm:py-12 lg:py-16 -mt-4">
       <div className="container">
         <div className="mx-auto mb-5 max-w-2xl text-center sm:mb-14">
           <p className="mb-2 inline-block rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-semibold text-primary sm:py-0.5 sm:text-xs">
