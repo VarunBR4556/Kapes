@@ -31,7 +31,7 @@ const steps = [
 
 const HowItWorks = () => {
   return (
-    <section id="how-it-works" className="relative scroll-mt-10 overflow-hidden py-8 sm:py-12 lg:py-16 -mt-4 sm:mt-0">
+    <section id="how-it-works" className="relative scroll-mt-16 overflow-hidden py-8 sm:mt-0 sm:scroll-mt-24 sm:py-12 lg:py-16 -mt-4">
       <div className="container">
         <div className="mx-auto mb-5 max-w-2xl text-center sm:mb-14">
           <p className="mb-2 inline-block rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-semibold text-primary sm:py-0.5 sm:text-xs">

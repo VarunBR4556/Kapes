@@ -4,7 +4,7 @@ import { Truck, ArrowRight } from "lucide-react";
 
 const CtaBand = () => {
   return (
-    <section id="get-started" className="scroll-mt-20 pb-8 sm:pb-12 lg:pb-16">
+    <section id="get-started" className="scroll-mt-16 pb-8 sm:scroll-mt-20 sm:pb-12 lg:pb-16">
       <div className="container">
         <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-amber-400 px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-16 text-center dark:bg-teal-400">
           <Truck className="pointer-events-none absolute -bottom-4 -left-4 h-32 w-32 sm:-bottom-8 sm:-left-8 sm:h-48 sm:w-48 rotate-12 text-amber-500/40 dark:text-teal-600/40" />
