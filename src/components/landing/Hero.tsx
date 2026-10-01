@@ -38,8 +38,8 @@ const Hero = () => {
 
   return (
     <section id="top" className="relative overflow-hidden -mt-4 sm:mt-0">
-      <div className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
-      <div className="pointer-events-none absolute -right-24 top-40 h-80 w-80 rounded-full bg-amber-300/20 blur-3xl dark:bg-teal-400/15" />
+      <div className="pointer-events-none absolute -left-20 -top-16 h-48 w-48 rounded-full bg-primary/10 blur-3xl sm:-left-32 sm:-top-32 sm:h-96 sm:w-96" />
+      <div className="pointer-events-none absolute -right-16 top-24 h-40 w-40 rounded-full bg-amber-300/20 blur-3xl sm:-right-24 sm:top-40 sm:h-80 sm:w-80 dark:bg-teal-400/15" />
 
       <div className="container relative grid items-center gap-8 sm:gap-10 py-8 sm:py-12 lg:py-16 lg:grid-cols-2">
         <div>
@@ -139,9 +139,9 @@ const Hero = () => {
           </p>
         </Card>
       </div>
-      <Watermark icon={Truck} className="-left-14 -top-8 h-72 w-72 rotate-12 opacity-[0.03] dark:opacity-[0.04] sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
-      <Watermark icon={Route} className="-bottom-10 -right-10 h-80 w-80 -rotate-12 opacity-[0.03] dark:opacity-[0.04] sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
-      <Watermark icon={Package} className="right-1/3 top-2 h-40 w-40 rotate-6 opacity-[0.03] dark:opacity-[0.04] sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
+      <Watermark icon={Truck} className="-left-8 -top-6 h-24 w-24 rotate-12 opacity-[0.05] dark:opacity-[0.06] sm:-left-14 sm:-top-8 sm:h-72 sm:w-72 sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
+      <Watermark icon={Route} className="-bottom-8 -right-8 h-28 w-28 -rotate-12 opacity-[0.05] dark:opacity-[0.06] sm:-bottom-10 sm:-right-10 sm:h-80 sm:w-80 sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
+      <Watermark icon={Package} className="right-2 top-24 h-16 w-16 rotate-6 opacity-[0.05] dark:opacity-[0.06] sm:right-1/3 sm:top-2 sm:h-40 sm:w-40 sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
     </section>
   );
 };

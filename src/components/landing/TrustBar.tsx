@@ -21,8 +21,8 @@ const TrustBar = () => {
           </div>
         ))}
       </div>
-      <Watermark icon={Container} className="-left-10 -bottom-8 h-40 w-40 -rotate-12 opacity-[0.03] dark:opacity-[0.04] sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
-      <Watermark icon={Truck} className="-right-10 -top-12 h-40 w-40 rotate-12 opacity-[0.03] dark:opacity-[0.04] sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
+      <Watermark icon={Container} className="-left-6 -bottom-6 h-20 w-20 -rotate-12 opacity-[0.05] dark:opacity-[0.06] sm:-left-10 sm:-bottom-8 sm:h-40 sm:w-40 sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
+      <Watermark icon={Truck} className="-right-6 -top-6 h-20 w-20 rotate-12 opacity-[0.05] dark:opacity-[0.06] sm:-right-10 sm:-top-12 sm:h-40 sm:w-40 sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
     </section>
   );
 };

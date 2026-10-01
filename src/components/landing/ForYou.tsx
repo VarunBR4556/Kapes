@@ -76,9 +76,9 @@ const ForYou = () => {
           </div>
         </div>
       </div>
-      <Watermark icon={Package} className="-left-10 -bottom-6 h-52 w-52 rotate-12 opacity-[0.03] dark:opacity-[0.04] sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
-      <Watermark icon={Route} className="-right-12 top-16 h-56 w-56 -rotate-12 opacity-[0.03] dark:opacity-[0.04] sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
-      <Watermark icon={Truck} className="top-1/2 right-1/3 h-28 w-28 rotate-6 opacity-[0.03] dark:opacity-[0.04] sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
+      <Watermark icon={Package} className="-left-6 -bottom-4 h-24 w-24 rotate-12 opacity-[0.05] dark:opacity-[0.06] sm:-left-10 sm:-bottom-6 sm:h-52 sm:w-52 sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
+      <Watermark icon={Route} className="-right-6 top-20 h-24 w-24 -rotate-12 opacity-[0.05] dark:opacity-[0.06] sm:-right-12 sm:top-16 sm:h-56 sm:w-56 sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
+      <Watermark icon={Truck} className="right-2 top-1/2 h-20 w-20 rotate-6 opacity-[0.05] dark:opacity-[0.06] sm:right-1/3 sm:h-28 sm:w-28 sm:opacity-[0.07] sm:dark:opacity-[0.08]" />
     </section>
   );
 };
