@@ -67,71 +67,73 @@ const Footer = () => {
 
   return (
     <footer id="company" className="scroll-mt-16 border-t bg-muted sm:scroll-mt-20">
-      <div className="container py-6 sm:py-10 lg:py-14">
+      <div className="container py-3 sm:py-10 lg:py-14">
         <div className="lg:grid lg:gap-10 lg:grid-cols-6">
           <div className="lg:col-span-2">
-            <a href="#top" className="flex items-center gap-2 sm:gap-2.5">
-              <span className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-                <Truck className="h-4 w-4 sm:h-5 sm:w-5" />
-              </span>
-              <span className="text-lg sm:text-xl font-bold tracking-tight">
-                Kapes<span className="text-primary">.</span>
-              </span>
-            </a>
-            <p className="mt-2 max-w-xs text-[10px] sm:text-xs text-muted-foreground">
+            <div className="flex items-center justify-between gap-3 sm:block">
+              <a href="#top" className="flex items-center gap-2 sm:gap-2.5">
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-primary-foreground sm:h-9 sm:w-9 sm:rounded-xl">
+                  <Truck className="h-3.5 w-3.5 sm:h-5 sm:w-5" />
+                </span>
+                <span className="text-base font-bold tracking-tight sm:text-xl">
+                  Kapes<span className="text-primary">.</span>
+                </span>
+              </a>
+              <div className="flex items-center gap-1 sm:mt-3 sm:gap-1.5">
+                {socials.map((Icon, i) => (
+                  <a
+                    key={i}
+                    href="#"
+                    aria-label="Social link"
+                    className="relative flex h-7 w-7 items-center justify-center rounded-lg border bg-background text-muted-foreground transition-colors after:absolute after:-inset-1 hover:border-primary hover:text-primary sm:h-8 sm:w-9"
+                  >
+                    <Icon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                  </a>
+                ))}
+              </div>
+            </div>
+            <p className="mt-1.5 max-w-xs text-[10px] leading-tight text-muted-foreground sm:mt-2 sm:text-xs sm:leading-normal">
               The vehicle capacity marketplace. Turn empty space on the road into
               revenue — and pay only for the space you need.
             </p>
-            <div className="mt-3 flex items-center gap-1 sm:gap-1.5">
-              {socials.map((Icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  aria-label="Social link"
-                  className="flex h-7 w-7 sm:h-8 sm:w-9 items-center justify-center rounded-lg border bg-background text-muted-foreground transition-colors hover:border-primary hover:text-primary"
-                >
-                  <Icon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                </a>
-              ))}
-            </div>
           </div>
 
-          <div className="-mx-8 mt-5 flex snap-x snap-mandatory gap-6 overflow-x-auto overscroll-x-contain px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-pl-8 sm:-mx-0 sm:mt-0 sm:contents sm:overflow-visible sm:px-0 sm:scroll-pl-0">
-          {visibleColumns.map((col) => (
-            <div
-              key={col.title}
-              className="w-[42%] shrink-0 snap-start sm:w-auto sm:shrink lg:w-auto"
-            >
-              <h4 className="mb-1.5 text-[10px] sm:mb-2 sm:text-xs font-bold uppercase tracking-wider">{col.title}</h4>
-              <ul className="space-y-1.5">
-                {col.links.map((link) => (
-                  <li key={link.label}>
-                    {link.to ? (
-                      <Link
-                        to={link.to}
-                        className="text-[10px] sm:text-xs text-muted-foreground transition-colors hover:text-foreground"
-                      >
-                        {link.label}
-                      </Link>
-                    ) : (
-                      <a
-                        href="#"
-                        className="text-[10px] sm:text-xs text-muted-foreground transition-colors hover:text-foreground"
-                      >
-                        {link.label}
-                      </a>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <div className="-mx-8 mt-3 flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-pl-8 sm:-mx-0 sm:mt-0 sm:contents sm:gap-0 sm:overflow-visible sm:px-0 sm:scroll-pl-0">
+            {visibleColumns.map((col) => (
+              <div
+                key={col.title}
+                className="w-[42%] shrink-0 snap-start sm:w-auto sm:shrink lg:w-auto"
+              >
+                <h4 className="mb-1 text-[10px] font-bold uppercase tracking-wider sm:mb-2 sm:text-xs">{col.title}</h4>
+                <ul className="space-y-0.5 sm:space-y-1.5">
+                  {col.links.map((link) => (
+                    <li key={link.label}>
+                      {link.to ? (
+                        <Link
+                          to={link.to}
+                          className="text-[10px] text-muted-foreground transition-colors hover:text-foreground sm:text-xs"
+                        >
+                          {link.label}
+                        </Link>
+                      ) : (
+                        <a
+                          href="#"
+                          className="text-[10px] text-muted-foreground transition-colors hover:text-foreground sm:text-xs"
+                        >
+                          {link.label}
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
       <div className="border-t">
-        <div className="container flex flex-col items-center justify-between gap-1 py-3 text-[10px] sm:text-xs text-muted-foreground sm:flex-row">
+        <div className="container flex flex-col items-center justify-between gap-0 py-2 text-[10px] text-muted-foreground sm:flex-row sm:gap-1 sm:py-3 sm:text-xs">
           <p>© {new Date().getFullYear()} Kapes. All rights reserved.</p>
           <p>Built to cut empty runs, not corners.</p>
         </div>
