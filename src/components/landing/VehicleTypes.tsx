@@ -73,11 +73,11 @@ const VehicleTypes = () => {
           </p>
         </div>
 
-        <div className="-mx-8 flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-pl-8 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-0 sm:scroll-pl-0 lg:grid-cols-4 lg:gap-6">
+        <div className="-mx-8 flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-pl-8 scroll-smooth sm:gap-4 sm:[scrollbar-width:thin] sm:[scrollbar-color:hsl(var(--border))_transparent] sm:[&::-webkit-scrollbar]:h-1.5 sm:[&::-webkit-scrollbar]:bg-transparent sm:[&::-webkit-scrollbar-thumb]:rounded-full sm:[&::-webkit-scrollbar-thumb]:bg-border lg:gap-6">
           {vehicles.map((v) => (
             <Card
               key={v.label}
-              className="group w-[42%] shrink-0 cursor-pointer snap-start rounded-xl transition-all hover:-translate-y-1 hover:shadow-lg sm:w-auto sm:rounded-2xl"
+              className="group w-[42%] shrink-0 cursor-pointer snap-start rounded-xl transition-all hover:-translate-y-1 hover:shadow-lg sm:w-[46%] sm:rounded-2xl lg:w-[31%]"
             >
               <CardContent className="flex flex-col items-start p-2 sm:p-5 lg:p-7">
                 <div className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-primary-foreground transition-transform group-hover:scale-110 sm:mb-4 sm:h-12 sm:w-12 sm:rounded-xl">

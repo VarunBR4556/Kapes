@@ -48,11 +48,11 @@ const HowItWorks = () => {
           </p>
         </div>
 
-        <div className="-mx-8 flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-pl-8 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:px-0 sm:scroll-pl-0 lg:gap-6">
+        <div className="-mx-8 flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-pl-8 scroll-smooth sm:gap-4 sm:[scrollbar-width:thin] sm:[scrollbar-color:hsl(var(--border))_transparent] sm:[&::-webkit-scrollbar]:h-1.5 sm:[&::-webkit-scrollbar]:bg-transparent sm:[&::-webkit-scrollbar-thumb]:rounded-full sm:[&::-webkit-scrollbar-thumb]:bg-border lg:gap-6">
           {steps.map((step, i) => (
             <Card
               key={step.title}
-              className="relative w-[70%] shrink-0 snap-start overflow-hidden rounded-xl sm:w-auto sm:rounded-2xl"
+              className="relative w-[70%] shrink-0 snap-start overflow-hidden rounded-xl sm:w-[48%] sm:rounded-2xl lg:w-[32%]"
             >
               <CardContent className="p-2 sm:p-5 lg:p-7">
                 <span className="absolute right-1.5 top-1.5 text-xl font-extrabold text-primary/10 sm:right-4 sm:top-4 sm:text-5xl">

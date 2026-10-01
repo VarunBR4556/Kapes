@@ -98,11 +98,11 @@ const Footer = () => {
             </p>
           </div>
 
-          <div className="-mx-8 mt-3 flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-pl-8 sm:-mx-0 sm:mt-0 sm:contents sm:gap-0 sm:overflow-visible sm:px-0 sm:scroll-pl-0">
+          <div className="-mx-8 mt-3 flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-pl-8 scroll-smooth sm:gap-5 sm:[scrollbar-width:thin] sm:[scrollbar-color:hsl(var(--border))_transparent] sm:[&::-webkit-scrollbar]:h-1.5 sm:[&::-webkit-scrollbar]:bg-transparent sm:[&::-webkit-scrollbar-thumb]:rounded-full sm:[&::-webkit-scrollbar-thumb]:bg-border lg:col-span-4">
             {visibleColumns.map((col) => (
               <div
                 key={col.title}
-                className="w-[42%] shrink-0 snap-start sm:w-auto sm:shrink lg:w-auto"
+                className="w-[42%] shrink-0 snap-start sm:w-[45%] lg:w-[46%]"
               >
                 <h4 className="mb-1 text-[10px] font-bold uppercase tracking-wider sm:mb-2 sm:text-xs">{col.title}</h4>
                 <ul className="space-y-0.5 sm:space-y-1.5">
