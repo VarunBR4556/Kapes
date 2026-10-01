@@ -48,7 +48,7 @@ const HowItWorks = () => {
           </p>
         </div>
 
-        <div className="-mx-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:px-0 lg:gap-6">
+        <div className="-mx-8 flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-pl-8 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:px-0 sm:scroll-pl-0 lg:gap-6">
           {steps.map((step, i) => (
             <Card
               key={step.title}
