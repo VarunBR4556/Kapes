@@ -361,15 +361,20 @@ export const UsersProvider = ({ children }: { children: ReactNode }) => {
     }
     setLoading(true);
 
-    const { data: drivers } = await supabase.from("public_drivers").select("*");
+    // The driver directory and the signed-in user's own bundle do not depend on
+    // each other, so fetch them together instead of in series.
+    const [driversRes, self] = await Promise.all([
+      supabase.from("public_drivers").select("*"),
+      loadUserBundle(userId, user?.email ?? "", role ?? "customer"),
+    ]);
+
     const dir: Record<string, User> = {};
-    (drivers ?? []).forEach((d) => {
+    (driversRes.data ?? []).forEach((d) => {
       const u = directoryUser(d as Record<string, unknown>);
       dir[u.id] = u;
     });
     setDirectory(dir);
 
-    const self = await loadUserBundle(userId, user?.email ?? "", role ?? "customer");
     if (!self) {
       setUsers([]);
       setLoading(false);

@@ -2,11 +2,12 @@ import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
-import Login from "./pages/Login";
-import Settings from "./pages/Settings";
 import RequireRole from "./components/auth/RequireRole";
 import ScrollToTop from "./components/ScrollToTop";
+import PageLoader from "./components/PageLoader";
 
+const Login = lazy(() => import("./pages/Login"));
+const Settings = lazy(() => import("./pages/Settings"));
 const DriverDashboard = lazy(() => import("./pages/DriverDashboard"));
 const CustomerDashboard = lazy(() => import("./pages/CustomerDashboard"));
 const Trips = lazy(() => import("./pages/Trips"));
@@ -15,7 +16,7 @@ const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 
 const App = () => {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<PageLoader />}>
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />

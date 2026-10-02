@@ -112,7 +112,7 @@ const PostTripForm = () => {
     }
   };
 
-  const onSubmit = (values: TripFormValues) => {
+  const onSubmit = async (values: TripFormValues) => {
     if (!currentUser || currentUser.role !== "driver" || !currentUser.name.trim()) {
       toast("Complete your driver profile first", {
         description: "Add your name in your profile so customers know who's posting this trip.",
@@ -141,7 +141,14 @@ const PostTripForm = () => {
       capacityKg: values.capacityKg,
       pricePerKg: values.pricePerKg,
     };
-    void addTrip(trip, { vehicleNumber: vehicle.vehicleNumber });
+    try {
+      await addTrip(trip, { vehicleNumber: vehicle.vehicleNumber });
+    } catch (err) {
+      toast(err instanceof Error ? err.message : "Could not post your trip.", {
+        description: "Your trip was not saved. Please check the details and try again.",
+      });
+      return;
+    }
     toast("Trip posted!", {
       description: `${values.origin} → ${values.destination} via ${vehicle.vehicleNumber} is now live for customers.`,
     });

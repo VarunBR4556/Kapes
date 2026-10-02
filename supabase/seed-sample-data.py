@@ -353,7 +353,7 @@ def build(reset):
     # ------------------------------------------------------------- trips
     approved = [d for d in drivers if d["ver"] == "approved"]
     kn = [c for c, _ in KARNATAKA]
-    trip_ids, trip_status, trip_rows, trip_places = [], [], [], []
+    trip_ids, trip_status, trip_rows, trip_places, trip_cap = [], [], [], [], []
     for d in approved:
         for _ in range(RNG.randint(3, 7)):
             # intra-Karnataka only: sample data stays inside the state
@@ -363,15 +363,16 @@ def build(reset):
                                   hours=RNG.randint(0, 23), minutes=RNG.choice([0, 30]))
             status = RNG.choices(
                 ["open", "matched", "completed", "cancelled"], [42, 22, 30, 6])[0]
+            cap = RNG.choice([250, 500, 750, 1000, 1500, 2000, 3000, 5000, 8000, 12000])
             tid = str(uuid.uuid4())
             trip_ids.append(tid)
             trip_status.append(status)
             trip_places.append((o, dest))
+            trip_cap.append(cap)
             trip_rows.append(
                 "(%s,%s,%s,%s,%s,%s,%s,%d,%s,%d,%d,%d,%s,%s,%s,%s)"
                 % (lit(tid), lit(d["uid"]), lit(o), lit(dest), lit(dep.date()),
-                   lit(dep.strftime("%H:%M:00")), lit(d["vtype"]),
-                   RNG.choice([250, 500, 750, 1000, 1500, 2000, 3000, 5000, 8000, 12000]),
+                   lit(dep.strftime("%H:%M:00")), lit(d["vtype"]), cap,
                    lit(round(RNG.uniform(6, 48), 2)), l, b, h, lit(status),
                    lit(now - timedelta(days=RNG.randint(0, 14))),
                    lit(d["name"]), lit(d["vnum"])))
@@ -382,14 +383,23 @@ def build(reset):
         + ",".join(trip_rows) + " on conflict (id) do nothing;")
 
     # ---------------------------------------------------------- bookings
+    # Never book past a trip's capacity. The app enforces this in the browser,
+    # but the seeder writes straight to the table and previously ignored it,
+    # which left most sample trips holding more weight than they could carry.
     book_rows, made = [], []
     for i, (tid, st) in enumerate(zip(trip_ids, trip_status)):
         if st == "cancelled":
             continue
         o_city, d_city = trip_places[i]
+        remaining = trip_cap[i]
         for _ in range(RNG.randint(1, 3)):
+            fits = [w for w in [80, 120, 180, 250, 400, 600, 900, 1500, 2500]
+                    if w <= remaining]
+            if not fits:
+                break
+            w = RNG.choice(fits)
+            remaining -= w
             c = customers[i % len(customers)]
-            w = RNG.choice([80, 120, 180, 250, 400, 600, 900, 1500, 2500])
             bstatus = {"open": "pending", "matched": RNG.choice(["confirmed", "in_transit"]),
                        "completed": RNG.choice(["delivered", "in_transit", "delivered"])}[st]
             bid = str(uuid.uuid4())

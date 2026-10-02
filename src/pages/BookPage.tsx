@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "@/components/ui/sonner";
 import { Truck, Home, MapPin, ArrowRight, CalendarDays, Clock, Route, Weight, Boxes, CheckCircle2, Package } from "lucide-react";
 import { useTrips } from "@/lib/trips-store";
-import { useBookings } from "@/lib/bookings-store";
+import { useBookings, type Booking } from "@/lib/bookings-store";
 import { formatDate } from "@/lib/format";
 import { cargoRoomLabel } from "@/lib/trips";
 import { tripDeparted } from "@/lib/search";
@@ -106,19 +106,26 @@ const BookPage = () => {
       });
       return;
     }
-    const booking = await createBooking({
-      tripId: trip.id,
-      shipmentWeightKg: weightNum,
-      lengthCm: Math.round(lenNum),
-      breadthCm: Math.round(widNum),
-      heightCm: Math.round(hgtNum),
-      pickupAddress: pickup.trim(),
-      dropoffAddress: dropoff.trim(),
-      totalPrice,
-    });
-    if (booking) {
-      setSuccessId(booking.id);
+    let booking: Booking;
+    try {
+      booking = await createBooking({
+        tripId: trip.id,
+        shipmentWeightKg: weightNum,
+        lengthCm: Math.round(lenNum),
+        breadthCm: Math.round(widNum),
+        heightCm: Math.round(hgtNum),
+        pickupAddress: pickup.trim(),
+        dropoffAddress: dropoff.trim(),
+        totalPrice,
+      });
+    } catch (err) {
+      // Previously a rejected booking returned null and the button did nothing.
+      toast(err instanceof Error ? err.message : "Could not save your booking.", {
+        description: "Please review the details and try again.",
+      });
+      return;
     }
+    setSuccessId(booking.id);
   };
 
   return (

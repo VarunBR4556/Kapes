@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import type { Role } from "@/lib/users-store";
 import { roleHome } from "@/lib/auth";
@@ -9,7 +10,11 @@ const RequireRole = ({ role, children }: { role?: Role; children: ReactNode }) =
   const location = useLocation();
 
   if (loading) {
-    return null;
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <Loader2 className="h-7 w-7 animate-spin text-primary" aria-label="Loading" />
+      </div>
+    );
   }
 
   if (!user) {
