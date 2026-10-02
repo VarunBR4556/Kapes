@@ -1,11 +1,17 @@
-import { useState } from "react";
-import { CalendarDays } from "lucide-react";
+import { lazy, Suspense, useState } from "react";
+import { CalendarDays, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { formatDate, toIsoDate } from "@/lib/format";
+
+// react-day-picker is only needed once the popover is actually opened, but this
+// picker sits on the home page, so importing it eagerly charged every visitor
+// for it in the entry chunk.
+const Calendar = lazy(() =>
+  import("@/components/ui/calendar").then((m) => ({ default: m.Calendar })),
+);
 
 const parseIso = (iso?: string) =>
   iso && /^\d{4}-\d{2}-\d{2}$/.test(iso) ? new Date(`${iso}T00:00:00`) : undefined;
@@ -59,17 +65,25 @@ const DatePicker = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
-          mode="single"
-          selected={selected}
-          onSelect={(d) => {
-            if (d) onChange?.(toIsoDate(d));
-            setOpen(false);
-          }}
-          disabled={minDate ? { before: minDate } : undefined}
-          weekStartsOn={1}
-          initialFocus
-        />
+        <Suspense
+          fallback={
+            <div className="flex h-64 w-64 items-center justify-center">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            </div>
+          }
+        >
+          <Calendar
+            mode="single"
+            selected={selected}
+            onSelect={(d) => {
+              if (d) onChange?.(toIsoDate(d));
+              setOpen(false);
+            }}
+            disabled={minDate ? { before: minDate } : undefined}
+            weekStartsOn={1}
+            initialFocus
+          />
+        </Suspense>
       </PopoverContent>
     </Popover>
   );
