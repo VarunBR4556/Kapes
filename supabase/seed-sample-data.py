@@ -239,6 +239,20 @@ def build(reset):
         "confirmation_token,email_change,email_change_token_new,recovery_token) values "
         + auth_rows + " on conflict (id) do nothing;")
 
+    # GoTrue resolves password sign-in through auth.identities, so a user row on
+    # its own cannot log in. Without this every seeded account looks correct in
+    # the database but is rejected at sign-in.
+    identity_rows = ",".join(
+        "(gen_random_uuid(),%s,%s,'email',%s::jsonb,now(),now(),now())"
+        % (lit(u[0]), lit(u[0]),
+           jsq({"sub": u[0], "email": u[1], "email_verified": True,
+                "phone_verified": False, "name": u[2], "role": u[3]}))
+        for u in users)
+    stmts.append(
+        "insert into auth.identities (id,user_id,provider_id,provider,identity_data,"
+        "last_sign_in_at,created_at,updated_at) values "
+        + identity_rows + " on conflict (provider_id, provider) do nothing;")
+
     # ------------------------------------------------ profiles (guard off)
     meta = []
     for d in drivers:
