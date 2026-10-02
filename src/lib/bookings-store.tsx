@@ -29,6 +29,22 @@ export interface Booking {
   createdAt: string;
 }
 
+// The capacity trigger raises a Postgres check_violation. Turn the driver-facing
+// text into something a customer can act on.
+const friendlyBookingError = (message: string): string => {
+  if (message.includes("Trip capacity exceeded")) {
+    const m = message.match(/Trip capacity exceeded:\s*([\d.]+)\s*kg free/);
+    return m
+      ? `Someone booked this trip while you were filling the form. Only ${Math.round(
+          Number(m[1]),
+        ).toLocaleString("en-IN")} kg is left, please lower your weight or pick another trip.`
+      : "Someone booked this trip while you were filling the form. Please pick another trip.";
+  }
+  if (message.includes("Trip") && message.includes("does not exist"))
+    return "That trip no longer exists.";
+  return "Could not save your booking. Please try again.";
+};
+
 export const bookingSizeLabel = (
   booking: Pick<Booking, "lengthCm" | "breadthCm" | "heightCm">,
 ): string | null => {
@@ -142,7 +158,7 @@ interface BookingsContextValue {
   bookings: Booking[];
   myBookings: Booking[];
   loading: boolean;
-  createBooking: (input: CreateBookingInput) => Promise<Booking | null>;
+  createBooking: (input: CreateBookingInput) => Promise<Booking>;
   setBookingStatus: (id: string, status: BookingStatus) => Promise<void>;
   cancelTripWithBookings: (tripId: string) => Promise<void>;
   availableCapacityKgs: (tripId: string) => number;
@@ -196,12 +212,22 @@ export const BookingsProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const createBooking = useCallback(
-    async (input: CreateBookingInput): Promise<Booking | null> => {
-      if (!userId || !currentUser || currentUser.role !== "customer") return null;
+    async (input: CreateBookingInput): Promise<Booking> => {
+      if (!userId || !currentUser || currentUser.role !== "customer")
+        throw new Error("Only customer accounts can book a trip.");
       const trip = trips.find((t) => t.id === input.tripId);
-      if (!trip || (trip.status !== "open" && trip.status !== "matched")) return null;
-      if (tripDeparted(trip, new Date())) return null;
-      if (input.shipmentWeightKg > availableCapacityKgs(input.tripId)) return null;
+      if (!trip) throw new Error("That trip no longer exists.");
+      if (trip.status !== "open" && trip.status !== "matched")
+        throw new Error("That trip is not accepting bookings.");
+      if (tripDeparted(trip, new Date()))
+        throw new Error("That trip has already departed.");
+      const free = availableCapacityKgs(input.tripId);
+      if (input.shipmentWeightKg > free)
+        throw new Error(
+          free <= 0
+            ? "That trip is already fully booked."
+            : `Only ${free.toLocaleString("en-IN")} kg is left on that trip.`,
+        );
 
       const { data, error } = await supabase
         .from("bookings")
@@ -219,7 +245,10 @@ export const BookingsProvider = ({ children }: { children: ReactNode }) => {
         } as unknown as Record<string, never>)
         .select()
         .single();
-      if (error || !data) return null;
+      // The database also enforces capacity, so a race between two customers can
+      // still be rejected here. Surface it instead of failing silently.
+      if (error) throw new Error(friendlyBookingError(error.message));
+      if (!data) throw new Error("Could not save your booking. Please try again.");
       const mapped = mapBooking(data as Record<string, unknown>);
       setBookings((prev) => [mapped, ...prev]);
       return mapped;

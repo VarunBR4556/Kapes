@@ -22,20 +22,27 @@ const ReportBugDialog = () => {
   const [severity, setSeverity] = useState<BugSeverity>("medium");
   const [description, setDescription] = useState("");
 
-  const submit = () => {
+  const submit = async () => {
     if (!title.trim() || !description.trim()) {
       toast("Add the details", { description: "A short title and description are required." });
       return;
     }
     if (!currentUser) return;
-    void reportBug({
-      title: title.trim(),
-      description: description.trim(),
-      category,
-      severity,
-      reporterId: currentUser.id,
-      reporterName: currentUser.name,
-    });
+    try {
+      await reportBug({
+        title: title.trim(),
+        description: description.trim(),
+        category,
+        severity,
+        reporterId: currentUser.id,
+        reporterName: currentUser.name,
+      });
+    } catch (err) {
+      toast(err instanceof Error ? err.message : "Could not send your report.", {
+        description: "Nothing was sent. Please try again.",
+      });
+      return;
+    }
     toast("Bug report submitted", {
       description: "Thanks! The team has been notified and will look into it.",
     });

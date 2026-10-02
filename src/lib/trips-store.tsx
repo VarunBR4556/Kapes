@@ -92,8 +92,8 @@ export const TripsProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const addTrip = useCallback(
-    async (trip: NewTrip, vehicle?: { vehicleNumber?: string }) => {
-      if (!userId) return null;
+    async (trip: NewTrip, vehicle?: { vehicleNumber?: string }): Promise<Trip> => {
+      if (!userId) throw new Error("Sign in as a driver to post a trip.");
       const room = defaultCargoRoom(trip.vehicleType);
       const driverName = currentUser?.name?.trim() || undefined;
       const driverVehicle =
@@ -118,7 +118,10 @@ export const TripsProvider = ({ children }: { children: ReactNode }) => {
         } as unknown as Record<string, never>)
         .select()
         .single();
-      if (error || !data) return null;
+      // Thrown rather than returning null: the caller used to report success
+      // unconditionally, so a rejected insert still showed "Trip posted!".
+      if (error) throw new Error(`Could not post your trip. ${error.message}`.trim());
+      if (!data) throw new Error("Could not post your trip. Please try again.");
       const mapped = mapTrip(data as Record<string, unknown>);
       setTrips((prev) => [mapped, ...prev]);
       return mapped;

@@ -29,23 +29,30 @@ const ReportIssueDialog = ({
   const [category, setCategory] = useState<IssueCategory>("delay");
   const [message, setMessage] = useState("");
 
-  const submit = () => {
+  const submit = async () => {
     if (!message.trim()) {
       toast("Describe the issue", { description: "Please add a short description." });
       return;
     }
     if (!currentUser) return;
-    void reportTransitIssue({
-      bookingId: booking.id,
-      tripId: trip.id,
-      origin: trip.origin,
-      destination: trip.destination,
-      category,
-      message: message.trim(),
-      reporterId: currentUser.id,
-      reporterName: currentUser.name,
-      reporterRole,
-    });
+    try {
+      await reportTransitIssue({
+        bookingId: booking.id,
+        tripId: trip.id,
+        origin: trip.origin,
+        destination: trip.destination,
+        category,
+        message: message.trim(),
+        reporterId: currentUser.id,
+        reporterName: currentUser.name,
+        reporterRole,
+      });
+    } catch (err) {
+      toast(err instanceof Error ? err.message : "Could not send your report.", {
+        description: "Nothing was sent. Please try again.",
+      });
+      return;
+    }
     toast("Issue reported", {
       description: "Our support team has been notified. You can track it in the admin review queue.",
     });

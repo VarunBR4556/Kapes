@@ -152,9 +152,9 @@ interface ReportsContextValue {
   issues: TransitIssue[];
   bugs: BugReport[];
   loading: boolean;
-  reportTransitIssue: (input: ReportTransitIssueInput) => Promise<TransitIssue | null>;
+  reportTransitIssue: (input: ReportTransitIssueInput) => Promise<TransitIssue>;
   resolveTransitIssue: (id: string) => Promise<void>;
-  reportBug: (input: ReportBugInput) => Promise<BugReport | null>;
+  reportBug: (input: ReportBugInput) => Promise<BugReport>;
   updateBugStatus: (id: string, status: BugStatus) => Promise<void>;
 }
 
@@ -214,10 +214,10 @@ export const ReportsProvider = ({ children }: { children: ReactNode }) => {
   }, [refresh, userId]);
 
   const reportTransitIssue = useCallback(
-    async (input: ReportTransitIssueInput): Promise<TransitIssue | null> => {
-      if (!userId) return null;
+    async (input: ReportTransitIssueInput): Promise<TransitIssue> => {
+      if (!userId) throw new Error("Sign in to send a report.");
       const message = input.message.trim();
-      if (!message) return null;
+      if (!message) throw new Error("Please describe the issue.");
       const { data, error } = await supabase
         .from("transit_issues")
         .insert({
@@ -234,7 +234,8 @@ export const ReportsProvider = ({ children }: { children: ReactNode }) => {
         } as unknown as Record<string, never>)
         .select()
         .single();
-      if (error || !data) return null;
+      if (error || !data)
+        throw new Error("Could not send your report. Please try again.");
       const mapped = mapIssue(data as Record<string, unknown>);
       setIssues((prev) => [mapped, ...prev]);
       return mapped;
@@ -256,11 +257,11 @@ export const ReportsProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const reportBug = useCallback(
-    async (input: ReportBugInput): Promise<BugReport | null> => {
-      if (!userId) return null;
+    async (input: ReportBugInput): Promise<BugReport> => {
+      if (!userId) throw new Error("Sign in to send a report.");
       const title = input.title.trim();
       const description = input.description.trim();
-      if (!title || !description) return null;
+      if (!title || !description) throw new Error("Please add a title and description.");
       const { data, error } = await supabase
         .from("bug_reports")
         .insert({
@@ -274,7 +275,8 @@ export const ReportsProvider = ({ children }: { children: ReactNode }) => {
         } as unknown as Record<string, never>)
         .select()
         .single();
-      if (error || !data) return null;
+      if (error || !data)
+        throw new Error("Could not send your report. Please try again.");
       const mapped = mapBug(data as Record<string, unknown>);
       setBugs((prev) => [mapped, ...prev]);
       return mapped;
