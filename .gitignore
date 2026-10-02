@@ -14,3 +14,7 @@ dist-ssr
 npm-debug.log*
 .vercel
 .env*
+
+# Python
+__pycache__/
+*.pyc
