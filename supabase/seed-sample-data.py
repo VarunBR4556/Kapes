@@ -24,6 +24,10 @@ from datetime import datetime, timedelta, timezone
 PROJECT = os.environ.get("SUPABASE_PROJECT_REF", "dhherozzahugoicjezdh")
 PAT = os.environ["SUPABASE_ACCESS_TOKEN"]
 SAMPLE_PASSWORD = "Kapes@Test2026"
+
+# Exact headcount of seeded people. Drivers and customers are Karnataka-only.
+SAMPLE_DRIVERS = 50
+SAMPLE_CUSTOMERS = 50
 API = f"https://api.supabase.com/v1/projects/{PROJECT}/database/query"
 ENABLE_GUARD = "alter table public.profiles enable trigger guard_profile_privileges;"
 
@@ -89,14 +93,6 @@ KARNATAKA = [
     ("Nelamangala", "Bengaluru Rural"),
 ]
 
-# Out-of-state gateways for intercity runs
-NATIONAL = [
-    ("Mumbai", "Maharashtra"), ("Hyderabad", "Telangana"),
-    ("Chennai", "Tamil Nadu"), ("Kochi", "Kerala"),
-    ("Pune", "Maharashtra"), ("Goa", "Goa"),
-    ("Coimbatore", "Tamil Nadu"), ("Vijayawada", "Andhra Pradesh"),
-]
-
 VEHICLE_TYPES = ["Mini", "Truck", "Container", "Trailer"]
 # exactly the values in src/lib/trips.ts defaultCargoRoom
 CARGO = {
@@ -121,7 +117,7 @@ CUST_LAST = ["Sharma", "Patil", "Iyer", "Rao", "Khan", "Ali", "Nair", "Desai",
              "Agarwal", "Mehta", "Reddy", "Babu", "Pillai", "Joshi", "Sethi",
              "Balan", "Pandey", "Kulkarni", "Kamath", "Rao", "Hegde", "Shetty"]
 
-VEHICLE_STATES = ["KA", "KA", "KA", "KA", "MH", "TN", "DL", "KL", "AP", "TS", "GA", "RJ"]
+VEHICLE_STATES = ["KA"]  # sample data is Karnataka-only
 
 BUG_TEMPLATES = [
     ("Payment page shows a spinner forever",
@@ -194,28 +190,26 @@ def build(reset):
     pw = bcrypt.hashpw(SAMPLE_PASSWORD.encode(), bcrypt.gensalt(rounds=10)).decode()
 
     # ---------------------------------------------------------- people
+    # Exactly SAMPLE_DRIVERS / SAMPLE_CUSTOMERS people, all based in Karnataka,
+    # cycling the district list so every district gets covered before repeats.
     drivers = []
-    n = 0
-    for city, dist in KARNATAKA:
-        for k in range(RNG.choice([1, 1, 2])):
-            n += 1
-            ver = RNG.choices(["approved", "pending", "rejected"], [82, 12, 6])[0]
-            drivers.append(dict(
-                idx=n, name=f"{FIRST[n % len(FIRST)]} {LAST[n % len(LAST)]}",
-                phone=f"9{RNG.randint(100000000, 999999999)}",
-                vnum=f"{RNG.choice(VEHICLE_STATES)} {RNG.randint(1, 59):02d} "
-                     f"{chr(65 + RNG.randint(0, 25))}{chr(65 + RNG.randint(0, 25))} "
-                     f"{RNG.randint(1000, 9999)}",
-                vtype=RNG.choice(VEHICLE_TYPES), ver=ver, city=city, district=dist))
+    for n in range(1, SAMPLE_DRIVERS + 1):
+        city, dist = KARNATAKA[(n - 1) % len(KARNATAKA)]
+        ver = RNG.choices(["approved", "pending", "rejected"], [82, 12, 6])[0]
+        drivers.append(dict(
+            idx=n, name=f"{FIRST[n % len(FIRST)]} {LAST[n % len(LAST)]}",
+            phone=f"9{RNG.randint(100000000, 999999999)}",
+            vnum=f"{RNG.choice(VEHICLE_STATES)} {RNG.randint(1, 59):02d} "
+                 f"{chr(65 + RNG.randint(0, 25))}{chr(65 + RNG.randint(0, 25))} "
+                 f"{RNG.randint(1000, 9999)}",
+            vtype=RNG.choice(VEHICLE_TYPES), ver=ver, city=city, district=dist))
 
     customers = []
-    m = 0
-    for city, dist in KARNATAKA + NATIONAL:
-        for k in range(RNG.choice([1, 1, 2, 3])):
-            m += 1
-            customers.append(dict(
-                idx=m, name=f"{CUST_FIRST[m % len(CUST_FIRST)]} {CUST_LAST[m % len(CUST_LAST)]}",
-                phone=f"8{RNG.randint(100000000, 999999999)}", city=city, district=dist))
+    for m in range(1, SAMPLE_CUSTOMERS + 1):
+        city, dist = KARNATAKA[(m - 1) % len(KARNATAKA)]
+        customers.append(dict(
+            idx=m, name=f"{CUST_FIRST[m % len(CUST_FIRST)]} {CUST_LAST[m % len(CUST_LAST)]}",
+            phone=f"8{RNG.randint(100000000, 999999999)}", city=city, district=dist))
 
     for d in drivers:
         d["uid"] = str(uuid.uuid4())
@@ -362,12 +356,8 @@ def build(reset):
     trip_ids, trip_status, trip_rows, trip_places = [], [], [], []
     for d in approved:
         for _ in range(RNG.randint(3, 7)):
-            # mostly intra-Karnataka, some outbound to other states
-            if RNG.random() < 0.78:
-                o, dest = RNG.sample(kn, 2)
-            else:
-                o = d["city"] if d["city"] in kn else RNG.choice(kn)
-                dest = RNG.choice([n for n, _ in NATIONAL])
+            # intra-Karnataka only: sample data stays inside the state
+            o, dest = RNG.sample(kn, 2)
             l, b, h = CARGO[d["vtype"]]
             dep = now + timedelta(days=RNG.randint(-6, 30),
                                   hours=RNG.randint(0, 23), minutes=RNG.choice([0, 30]))
