@@ -290,11 +290,10 @@ const loadUserBundle = async (id: string, email: string, role: Role) => {
 
 const directoryUser = (row: Record<string, unknown>): User => {
   const searchable = Boolean(row.searchable);
-  const vehicle = (row.vehicle ?? {}) as Record<string, unknown>;
   return {
     id: String(row.id),
     role: "driver",
-    name: String(row.name ?? ""),
+    name: "",
     email: "",
     driverVerification: (row.driver_verification as DriverVerification | null) ?? undefined,
     documents: searchable
@@ -309,16 +308,7 @@ const directoryUser = (row: Record<string, unknown>): User => {
           },
         ]
       : [],
-    vehicles: vehicle.vehicleNumber
-      ? [
-          withVehicleRoom({
-            id: `public-${String(row.id)}`,
-            vehicleNumber: String(vehicle.vehicleNumber),
-            vehicleType: vehicle.vehicleType as VehicleType,
-            isPrimary: Boolean(vehicle.isPrimary),
-          }),
-        ]
-      : [],
+    vehicles: [],
     createdAt: "",
   };
 };
@@ -354,27 +344,25 @@ export const UsersProvider = ({ children }: { children: ReactNode }) => {
   const role = profile?.role ?? null;
 
   const refresh = useCallback(async () => {
-    if (!userId) {
-      setUsers([]);
-      setLoading(false);
-      return;
-    }
     setLoading(true);
 
-    // The driver directory and the signed-in user's own bundle do not depend on
-    // each other, so fetch them together instead of in series.
-    const [driversRes, self] = await Promise.all([
-      supabase.from("public_drivers").select("*"),
-      loadUserBundle(userId, user?.email ?? "", role ?? "customer"),
-    ]);
-
+    // The public driver directory powers the /trips search filter, which also
+    // applies to signed-out visitors, so it must load regardless of auth state.
+    const { data: driverRows } = await supabase.from("public_drivers").select("*");
     const dir: Record<string, User> = {};
-    (driversRes.data ?? []).forEach((d) => {
+    (driverRows ?? []).forEach((d) => {
       const u = directoryUser(d as Record<string, unknown>);
       dir[u.id] = u;
     });
     setDirectory(dir);
 
+    if (!userId) {
+      setUsers([]);
+      setLoading(false);
+      return;
+    }
+
+    const self = await loadUserBundle(userId, user?.email ?? "", role ?? "customer");
     if (!self) {
       setUsers([]);
       setLoading(false);
