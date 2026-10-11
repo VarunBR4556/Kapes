@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && vite build --ssr src/entry-server.tsx --outDir dist-server && node scripts/prerender.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "test": "esbuild src/lib/search.test.ts --bundle --platform=node --format=esm --alias:@=./src --inject:./src/lib/test-env-stub.js --outfile=node_modules/.tmp/search.test.mjs && node node_modules/.tmp/search.test.mjs",
