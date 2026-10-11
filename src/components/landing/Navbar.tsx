@@ -77,8 +77,8 @@ const Navbar = () => {
       className={cn(
         "sticky top-0 z-50 border-b transition-colors duration-200",
         scrolled
-          ? "border-border bg-background/85 backdrop-blur-md supports-[backdrop-filter]:bg-background/70"
-          : "border-transparent bg-background",
+          ? "border-border bg-primary/10 backdrop-blur-md supports-[backdrop-filter]:bg-primary/5"
+          : "border-transparent bg-primary/10",
       )}
     >
       <div className="container flex h-14 items-center justify-between sm:h-16">
