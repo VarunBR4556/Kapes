@@ -49,6 +49,23 @@ const CityInput = React.forwardRef<HTMLInputElement, CityInputProps>(
     const [highlight, setHighlight] = React.useState(0);
     const [now, setNow] = React.useState(() => new Date());
     const containerRef = React.useRef<HTMLDivElement>(null);
+    const suppressClickUntil = React.useRef(0);
+
+    // Touch devices fire a synthetic click after the finger lifts. Because the
+    // suggestion is chosen on touchstart and the list then unmounts, that click
+    // lands on whatever is now under the finger - typically the button just
+    // below the suggestion. Swallow that one stray click in the capture phase.
+    React.useEffect(() => {
+      const onClickCapture = (e: MouseEvent) => {
+        if (Date.now() < suppressClickUntil.current) {
+          suppressClickUntil.current = 0;
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      };
+      document.addEventListener("click", onClickCapture, true);
+      return () => document.removeEventListener("click", onClickCapture, true);
+    }, []);
 
     React.useEffect(() => {
       const tick = () => setNow(new Date());
@@ -170,8 +187,12 @@ const CityInput = React.forwardRef<HTMLInputElement, CityInputProps>(
                     e.preventDefault();
                     select(city);
                   }}
-                  onTouchStart={(e) => {
-                    e.preventDefault();
+                  onTouchStart={() => {
+                    // React attaches touchstart as a passive listener, so
+                    // preventDefault here is ignored and the browser still
+                    // synthesises a click. Flag the moment so the capture
+                    // handler above can drop that click.
+                    suppressClickUntil.current = Date.now() + 800;
                     select(city);
                   }}
                   onMouseEnter={() => setHighlight(i)}
