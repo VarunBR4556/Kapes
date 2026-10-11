@@ -25,6 +25,7 @@ const Navbar = () => {
   const { theme, setTheme } = useTheme();
   const location = useLocation();
   const scrolledRef = useRef(false);
+  const headerRef = useRef<HTMLElement>(null);
 
   const dashboardHref = currentUser ? roleHome(currentUser.role) : "/login";
 
@@ -56,11 +57,23 @@ const Navbar = () => {
   }, [open]);
 
   useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [open]);
+
+  useEffect(() => {
     setOpen(false);
   }, [location.pathname]);
 
   return (
     <header
+      ref={headerRef}
       className={cn(
         "sticky top-0 z-50 border-b transition-colors duration-200",
         scrolled
