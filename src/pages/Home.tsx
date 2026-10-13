@@ -4,6 +4,8 @@ import TrustBar from "@/components/landing/TrustBar";
 import HowItWorks from "@/components/landing/HowItWorks";
 import VehicleTypes from "@/components/landing/VehicleTypes";
 import ForYou from "@/components/landing/ForYou";
+import About from "@/components/landing/About";
+import Faq from "@/components/landing/Faq";
 import CtaBand from "@/components/landing/CtaBand";
 import Footer from "@/components/landing/Footer";
 
@@ -18,6 +20,8 @@ const Home = () => {
           <HowItWorks />
           <VehicleTypes />
           <ForYou />
+          <About />
+          <Faq />
           <CtaBand />
         </div>
       </main>

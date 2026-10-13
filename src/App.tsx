@@ -5,6 +5,7 @@ import NotFound from "./pages/NotFound";
 import RequireRole from "./components/auth/RequireRole";
 import ScrollToTop from "./components/ScrollToTop";
 import PageLoader from "./components/PageLoader";
+import Seo from "./components/Seo";
 
 const Login = lazy(() => import("./pages/Login"));
 const Settings = lazy(() => import("./pages/Settings"));
@@ -17,6 +18,7 @@ const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const App = () => {
   return (
     <Suspense fallback={<PageLoader />}>
+      <Seo />
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />
