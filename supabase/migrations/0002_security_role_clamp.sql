@@ -95,4 +95,17 @@ create policy "trips read public"
 --    driver's name and vehicle number to the unauthenticated role even after
 --    the vehicles policy above was tightened. security_invoker makes it respect
 --    the caller's RLS. Requires PG15+ (this project is on 17.6).
-alter view public.public_drivers set (security_invoker = true);
+--
+--    The view is created by 0004, not by an earlier migration, so guard the
+--    alter: on a database rebuilt from migrations in order the view does not
+--    exist yet, and an unguarded `alter view` aborts this whole migration.
+do $$
+begin
+  if exists (
+    select 1 from pg_views
+    where schemaname = 'public' and viewname = 'public_drivers'
+  ) then
+    alter view public.public_drivers set (security_invoker = true);
+  end if;
+end;
+$$;
