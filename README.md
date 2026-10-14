@@ -1,10 +1,22 @@
-# Kapes - Vehicle Capacity Marketplace
+# Kapes — Vehicle Capacity Marketplace
 
-A platform connecting drivers with unused vehicle capacity to customers needing shipping space. Reduce empty runs, lower shipping costs, and build trust in logistics.
+A platform connecting drivers with unused vehicle capacity to customers who need
+shipping space. Drivers post a trip and the space they have free; customers
+search by route and date, then book the space they need. The goal is fewer empty
+runs, lower shipping costs, and more trust in logistics.
 
 ## Overview
 
-Kapes is a marketplace that matches **unused vehicle capacity** (return trips, partially loaded vehicles) with **shipping demand**. Drivers post their routes and available space; customers search and book space for their shipments.
+Kapes matches **unused vehicle capacity** (return trips, partially loaded
+vehicles) with **shipping demand**. The system is a single React application on
+top of a Supabase backend:
+
+- **Customers** search open trips, book shipment space, follow their bookings,
+  and report problems in transit.
+- **Drivers** post trips, manage their bookings and statuses, and upload the
+  documents needed to be verified.
+- **Admins** review driver documents, moderate accounts (warn / hold / block),
+  and triage the reports that come in.
 
 ## Tech Stack
 
@@ -12,39 +24,110 @@ Kapes is a marketplace that matches **unused vehicle capacity** (return trips, p
 |----------|--------------|
 | **Frontend** | React 18, TypeScript, Vite 5 |
 | **Routing** | React Router DOM v6 |
-| **State Management** | TanStack Query (React Query) |
-| **Forms** | React Hook Form + Zod validation |
-| **UI Components** | Radix UI primitives + shadcn/ui patterns |
-| **Styling** | Tailwind CSS v3 + CSS Variables (light/dark mode) |
-| **Animations** | Framer Motion |
-| **Charts** | Recharts |
-| **Backend/Database** | Supabase (PostgreSQL, Auth, Realtime) |
-| **Date Handling** | date-fns, React Day Picker |
-| **Build/Lint** | ESLint, TypeScript, SWC |
+| **State** | React context stores + TanStack Query |
+| **Forms** | React Hook Form + Zod |
+| **UI** | Radix UI primitives + shadcn/ui patterns, lucide-react icons |
+| **Styling** | Tailwind CSS v3 + CSS variables (light/dark) |
+| **Animation / Charts** | Framer Motion, Recharts |
+| **Backend** | Supabase — PostgreSQL, Auth, Storage, Realtime |
+| **Dates** | date-fns, React Day Picker |
+| **Build / QA** | Vite, TypeScript, ESLint, esbuild + `node:test` |
+
+## Features
+
+### Authentication & accounts
+- Email/password sign-up and sign-in via Supabase Auth, with email
+  confirmation.
+- Role-based access (`customer`, `driver`, `admin`) enforced on routes and by
+  Postgres RLS.
+- Editable profile: name, phone, profile photo (stored in the public `avatars`
+  bucket), and a profile-activity feed.
+
+### Drivers
+- Post a trip: route, date/time, vehicle type, capacity (kg), price per kg, and
+  cargo-room dimensions.
+- Manage bookings on their trips and move them through
+  `pending → confirmed → in_transit → delivered` (or `cancelled`).
+- Vehicles: add/remove vehicles and manage cargo-room dimensions; each vehicle
+  needs an approved RC to be used.
+- Verification: upload a driving licence and per-vehicle RC PDFs; a driver only
+  appears in public search once every document is approved.
+
+### Customers
+- Search open trips by origin, destination, and date, with nearby/related route
+  suggestions.
+- Book space against a trip; the booking total is derived from weight × price.
+- Customer dashboard listing their bookings with live statuses.
+- Report a transit issue against a booking.
+
+### Admin
+- Review submitted driver documents (approve / reject with a note).
+- Moderate accounts: warn, place on hold, or block; each action is timestamped.
+- Rejected-document and per-user history views.
+- Triage in-transit issue reports and bug reports.
+
+### Platform
+- Public driver directory (`public_drivers` view) so unauthenticated visitors
+  can see verified drivers.
+- SEO: per-route metadata, prerendered home page, `robots.txt` and
+  `sitemap.xml`.
+- Security headers + SPA rewrites configured in `vercel.json`.
 
 ## Project Structure
 
 ```
 src/
-├── App.tsx                 # App routes (Home, 404)
-├── main.tsx                # Entry point (providers, router)
-├── index.css               # Tailwind + CSS variables (theme)
-├── lib/
-│   └── utils.ts            # cn() helper (clsx + tailwind-merge)
+├── App.tsx                 # Route table + role guards
+├── AppProviders.tsx        # Query client, auth and store providers
+├── main.tsx                # Client entry point
+├── entry-server.tsx        # SSR entry used for prerendering
+├── lib/                    # Domain logic and Supabase stores
+│   ├── supabase.ts         # Supabase client + storage helpers
+│   ├── auth-context.tsx    # Session/user context
+│   ├── auth.ts             # roleHome()
+│   ├── trips.ts            # Trip types, vehicle types, cargo room
+│   ├── trips-store.tsx     # Trip CRUD
+│   ├── bookings-store.tsx  # Booking CRUD + status rules
+│   ├── users-store.tsx     # Profiles, vehicles, documents, moderation
+│   ├── reports-store.tsx   # Transit issues + bug reports
+│   ├── search.ts           # Availability + matching logic
+│   ├── format.ts           # Date/number/initial formatting
+│   ├── image.ts            # Image resize helpers
+│   ├── *-fixtures.ts       # Fixtures for the node:test suites
+│   └── *.test.ts           # Unit/QA suites (run by esbuild + node:test)
 ├── components/
-│   └── ui/                 # shadcn/ui components (button, card, toast, etc.)
-├── pages/
-│   ├── Home.tsx            # Landing page
-│   └── NotFound.tsx        # 404 page
+│   ├── admin/ auth/ driver/ landing/ profile/ reports/ trips/
+│   └── ui/                 # shadcn/ui components
+├── pages/                  # Home, Login, Trips, BookPage, dashboards, Settings, 404
 ├── hooks/
-│   └── use-toast.ts        # Toast hook
+└── index.css               # Tailwind + CSS variables
+supabase/
+├── migrations/             # 0001–0006 (see Database)
+└── seed-sample-data.py     # QA data seeder
+scripts/
+└── prerender.mjs           # Post-build home-page prerender
 ```
+
+### Routes
+
+| Path | Access | Page |
+|------|--------|------|
+| `/` | public | Landing |
+| `/login` | public | Sign in / register |
+| `/trips` | public | Search trips |
+| `/settings` | any signed-in user | Profile settings |
+| `/book/:tripId` | customer | Booking form |
+| `/account` | customer | Customer dashboard |
+| `/driver` | driver | Driver dashboard |
+| `/admin` | admin | Admin dashboard |
+| `*` | public | 404 |
 
 ## Getting Started
 
 ### Prerequisites
-- Node.js 18+
-- npm or yarn
+- Node.js 18+ (tested on 20)
+- npm
+- A Supabase project (or the Supabase CLI for a local stack)
 
 ### Installation
 
@@ -52,202 +135,107 @@ src/
 npm install
 ```
 
+### Environment
+
+Create `.env` from the template and fill in your project values:
+
+```env
+VITE_SUPABASE_URL=https://your-project-ref.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
+```
+
+The client prefers `VITE_SUPABASE_PUBLISHABLE_KEY` and falls back to
+`VITE_SUPABASE_ANON_KEY`; both are the same public key under different names.
+Only public keys belong in these variables.
+
+### Database
+
+Apply the migrations in `supabase/migrations/` **in order**:
+
+| File | Purpose |
+|------|---------|
+| `0001_init.sql` | Tables, indexes, helper functions, RLS policies, storage buckets |
+| `0002_security_role_clamp.sql` | Hardens role/privilege escalation paths; sets `public_drivers` to `security_invoker` |
+| `0003_booking_capacity_guard.sql` | Trigger preventing over-capacity bookings |
+| `0004_public_driver_directory.sql` | `public_drivers` view for anonymous visitors |
+| `0005_align_booking_capacity.sql` | Aligns the capacity trigger with the client (delivered/cancelled free space) |
+| `0006_trip_driver_snapshot.sql` | Adds the denormalised `trips.driver_name` / `driver_vehicle` columns |
+
+Tables: `profiles`, `vehicles`, `driver_documents`, `trips`, `bookings`,
+`transit_issues`, `bug_reports`, `profile_activity`, plus the `public_drivers`
+view. Storage buckets: `avatars` (public) and `documents` (private).
+
+### Sample data (optional)
+
+`supabase/seed-sample-data.py` populates a broad QA dataset — every Karnataka
+district headquarters, every vehicle type, and every status, with 50 drivers and
+50 customers (all `@kapes.in`). It talks to the Supabase Management API, so it
+needs a Supabase personal access token:
+
+```bash
+export SUPABASE_ACCESS_TOKEN=sbp_...      # Supabase PAT, not a service_role key
+python3 supabase/seed-sample-data.py --reset
+```
+
+`--reset` first deletes previously seeded `@kapes.in` accounts (cascading to
+their data); the real admin account is never touched. The shared password for
+seeded accounts is defined at the top of the script.
+
 ### Development
 
 ```bash
 npm run dev
 ```
-Runs on `http://localhost:8080`
+
+Runs on `http://localhost:8080`.
 
 ### Build
 
 ```bash
-npm run build        # Production build
-npm run build:dev    # Development build
+npm run build        # Production build (client + SSR prerender → dist/)
+npm run build:dev    # Development-mode build
+npm run preview      # Serve the production build
 ```
 
-### Lint
+## Testing
+
+The suites are plain TypeScript bundled with esbuild and executed by Node's
+built-in `node:test` runner — no test framework dependency.
+
+| Command | Suite | Covers |
+|---------|-------|--------|
+| `npm test` | `src/lib/search.test.ts` | Trip availability and route matching |
+| `npm run test:qa` | `src/lib/qa.test.ts` | Verification gates, vehicle approval, booking/cargo formatting, routing |
+| `npm run test:form` | `src/lib/posttrip.test.ts` | Post-trip form validation wiring |
 
 ```bash
-npm run lint
+npm test
+npm run test:qa
+npm run test:form
+npm run typecheck    # tsc -b
+npm run lint         # ESLint
 ```
 
-### Preview Production Build
+## Environment & Deployment
 
-```bash
-npm run preview
-```
+Deployed on Vercel (`vercel.json`):
 
-## Environment Variables
+- `npm run build` output in `dist/`.
+- SPA rewrite sends non-asset routes to `index.html`.
+- Security headers include a Content-Security-Policy. The CSP's `connect-src`
+  lists the Supabase host explicitly — update it if you point the app at a
+  different project (or add `https://*.supabase.co` to keep it portable).
 
-Create a `.env` file in the root:
-
-```env
-VITE_SUPABASE_URL=your_supabase_project_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
-
-> **Note:** Supabase is installed but not yet integrated. These variables will be needed when implementing auth, database, and realtime features.
-
-## Current Features (Implemented)
-
-- [x] Landing page with hero, how-it-works, value props, CTAs
-- [x] Responsive design with Tailwind CSS
-- [x] Light/dark mode support (via CSS variables)
-- [x] shadcn/ui component library (Button, Card, Toast, Tooltip, etc.)
-- [x] React Router setup with 404 handling
-- [x] TanStack Query provider configured
-- [x] Toast notifications (Sonner + custom Toaster)
-- [x] TypeScript + ESLint + Prettier configuration
-
-## Planned Features (Not Yet Implemented)
-
-### Core Marketplace
-- [ ] Driver: Post trip/capacity (route, vehicle type, capacity, pricing, dates)
-- [ ] Customer: Search capacity (pickup, dropoff, date, shipment details)
-- [ ] Matching algorithm (route overlap, capacity fit, timing)
-- [ ] Booking flow (request, confirm, payment, tracking)
-
-### Authentication & User Management
-- [ ] Supabase Auth (email/password, OAuth)
-- [ ] Driver profile (vehicle details, verification, ratings)
-- [ ] Customer profile (company, billing, shipment history)
-- [ ] Role-based access (driver vs customer dashboards)
-
-### Real-time & Communication
-- [ ] Real-time trip updates (Supabase Realtime)
-- [ ] In-app messaging between driver/customer
-- [ ] Push/email notifications
-
-### Payments & Trust
-- [ ] Stripe integration for payments
-- [ ] Escrow/hold funds until delivery confirmation
-- [ ] Rating & review system
-- [ ] Driver verification (license, insurance, vehicle docs)
-
-### Analytics & Admin
-- [ ] Driver dashboard (earnings, trips, utilization)
-- [ ] Customer dashboard (shipments, costs, savings)
-- [ ] Admin panel (users, disputes, platform metrics)
-
-## Design System
-
-### Colors (CSS Variables)
-Defined in `src/index.css` using HSL values for full Tailwind integration:
-- `primary` - Main brand color (blue)
-- `secondary`, `muted`, `accent` - Supporting neutrals
-- `destructive` - Error/danger states
-- All colors have `foreground` variants for text on colored backgrounds
-
-### Components
-All UI components in `src/components/ui/` follow shadcn/ui patterns:
-- Built on Radix UI primitives
-- Styled with Tailwind + `cn()` utility
-- Fully typed with TypeScript
-- Support `className` prop for customization
-- `asChild` prop for composition (via Radix Slot)
-
-### Adding New Components
-```bash
-# Example: npx shadcn@latest add dialog
-# Then import from "@/components/ui/dialog"
-```
-
-## Supabase Schema (Planned)
-
-```sql
--- Users (extends Supabase auth.users)
-create table profiles (
-  id uuid references auth.users primary key,
-  role text check (role in ('driver', 'customer')) not null,
-  full_name text,
-  phone text,
-  avatar_url text,
-  created_at timestamp with time zone default now()
-);
-
--- Drivers (additional info)
-create table drivers (
-  id uuid references profiles primary key,
-  license_number text unique,
-  vehicle_type text,
-  vehicle_capacity_kg numeric,
-  vehicle_dimensions jsonb, -- {length, width, height}
-  verified boolean default false,
-  rating numeric default 0,
-  total_trips int default 0
-);
-
--- Trips/Capacity posts
-create table trips (
-  id uuid default gen_random_uuid() primary key,
-  driver_id uuid references drivers not null,
-  origin text not null,
-  destination text not null,
-  departure_date date not null,
-  departure_time time not null,
-  available_capacity_kg numeric not null,
-  price_per_kg numeric not null,
-  status text check (status in ('open', 'matched', 'completed', 'cancelled')) default 'open',
-  created_at timestamp with time zone default now()
-);
-
--- Bookings
-create table bookings (
-  id uuid default gen_random_uuid() primary key,
-  trip_id uuid references trips not null,
-  customer_id uuid references profiles not null,
-  shipment_weight_kg numeric not null,
-  shipment_dimensions jsonb,
-  pickup_address text not null,
-  dropoff_address text not null,
-  status text check (status in ('pending', 'confirmed', 'in_transit', 'delivered', 'cancelled')) default 'pending',
-  total_price numeric not null,
-  created_at timestamp with time zone default now()
-);
-```
-
-## Scripts Reference
-
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start dev server (port 8080) |
-| `npm run build` | Production build to `dist/` |
-| `npm run build:dev` | Development build |
-| `npm run lint` | Run ESLint |
-| `npm run preview` | Preview production build |
-
-## Deployment
-
-### Vercel (Recommended)
-1. Connect GitHub repo to Vercel
-2. Add environment variables in Vercel dashboard
-3. Deploy automatically on push to main
-
-### Docker
-```dockerfile
-FROM node:20-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-EXPOSE 8080
-CMD ["npm", "run", "preview"]
-```
+Add the `VITE_*` variables in the Vercel project settings before deploying.
 
 ## Contributing
 
-1. Fork the repository
-2. Create feature branch: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
+1. Fork the repository.
+2. Create a branch: `git checkout -b feature/amazing-feature`.
+3. Commit your changes.
+4. Push the branch and open a Pull Request.
 
 ## License
 
-MIT License - feel free to use for your own projects.
-
-## Contact
-
-Project: Kapes - Vehicle Capacity Marketplace
+MIT.
