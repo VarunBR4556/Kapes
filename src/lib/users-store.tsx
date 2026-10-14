@@ -506,11 +506,11 @@ export const UsersProvider = ({ children }: { children: ReactNode }) => {
 
       if (patch.name !== undefined) {
         row.name = patch.name;
-        logActivity(userId, "Updated name", "Now " + patch.name, );
+        await logActivity(userId, "Updated name", "Now " + patch.name);
       }
       if (patch.phone !== undefined) {
         row.phone = patch.phone || null;
-        void logActivity(
+        await logActivity(
           userId,
           patch.phone ? "Updated phone number" : "Removed phone number",
           patch.phone || undefined,
@@ -526,7 +526,7 @@ export const UsersProvider = ({ children }: { children: ReactNode }) => {
         } else {
           row.profile_pic = null;
         }
-        void logActivity(userId, patch.profilePic ? "Updated profile picture" : "Removed profile picture");
+        await logActivity(userId, patch.profilePic ? "Updated profile picture" : "Removed profile picture");
       }
 
       if (Object.keys(row).length > 0) {
